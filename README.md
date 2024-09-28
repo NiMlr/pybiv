@@ -1,4 +1,4 @@
-<img align="right" width="200" height="200" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786">
+<div style="width: 200px; height: 200px; overflow: hidden"><img align="right" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
 
 # pybiv
 Work with sums of bivariate functions in Python.
