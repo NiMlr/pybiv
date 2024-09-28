@@ -1,7 +1,7 @@
 <img align="right" width="200" height="200" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786">
 
-# pybiv - Working with sums of bivariate functions in Python.
-
+# pybiv
+Work with sums of bivariate functions in Python.
 This packages provides software to approximate by, optimize and manipulate sums of bivariate functions.
 
 #### Installation
