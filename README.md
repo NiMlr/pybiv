@@ -1,4 +1,4 @@
-<div style="bottom:50px; width: 35%; height: 35%; overflow: hidden"><img align="right" style="bottom:50px; width: 35%; height: 35%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
+<div style="bottom:50px; width: 35%; height: 35%; overflow: hidden"><img align="right" style="position: relative; bottom:500px; width: 35%; height: 35%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
 
 # pybiv
 Work with sums of bivariate functions in Python.
@@ -6,7 +6,7 @@ This packages provides software to approximate by, optimize and manipulate sums 
 
 #### Installation
 
-`erdospy` can be installed directly from source with:
+`pybiv` can be installed directly from source with:
 ```sh
 pip install git+https://github.com/NiMlr/pybiv
 ```
