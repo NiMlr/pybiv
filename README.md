@@ -30,6 +30,10 @@ pybiv.test.test_all()
 
 ## Tutorial
 
+### Contents
+[1. Approximation](#approximation)  
+[2. Optimization](#optimization)  
+
 #### Approximation
 
 We create an approximation by sums of bivariates of a discrete function that is the normalized product of three numbers.
