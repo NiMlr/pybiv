@@ -5,15 +5,15 @@
 Work with sums of bivariate functions in Python.
 This packages provides software to approximate by, optimize and manipulate sums of bivariate functions.
 
-A sum of bivariate functions is $f: \Omega \to \R$, where
-* $\Omega = \Omega_1 \times \dots \times \Omega_n$, where $\Omega_i = \{0, \dots, k_i-1\}$, $k_i \in \N$,
+A sum of bivariate functions is $f: \Omega \to \mathbb{R}$, where
+* $\Omega = \Omega_0 \times \dots \times \Omega_{n-1}$, where $\Omega_i = \{0, \dots, k_i-1\}$, $k_i \in \mathbb{N}$,
 * $\mathcal{V} := \{0, \dots n-1}$,
 * $\mathcal{E} := \{(i,j) \in \mathcal{V} \times \mathcal{V} \mid i < j \}$,
 * $f(x_0, \dots, x_{n-1}) = \sum_{(i,j) \in \mathcal{E}} f_{i, j}(x_i, x_j), x \in \Omega$.
 
 The $f_{i,j}, (i,j) \in \mathcal{E}$ is typically known or can be found by approximation.
 When working with this package $f_{i,j}, (i,j) \in \mathcal{E}$ is represented as a dictionary with
-keys $\mathcal{E}$ and values that are 2d-arrays $\big(f_{i,j}(x_i,x_j)\big)_{x_i=0,\dots, k_i-1; x_j=0, \dots,k_j-1}$.
+keys $\mathcal{E}$ and values that are 2d-arrays $f_{i,j}(x_i,x_j)_{x_i=0,\dots, k_i-1; x_j=0, \dots,k_j-1}$.
 
 #### Installation
 
