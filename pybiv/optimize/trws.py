@@ -4,6 +4,55 @@ from ..tools import (orient, rename, get_c, get_nbrs)
 
 
 def trws(f, B, c=None):
+    """Try to minimize a sum of bivariate functions.
+
+    Try to solve the NP-complete problem of minimizing
+    a sum of discrete bivariate functions with the TRW-S method.
+    The sum is represented by its summands which are represented
+    by 2d-arrays.
+
+    Parameters
+    ----------
+    f : dict
+        Dictionary with keys that are tuples of two integers and
+        values that are 2-d `np.ndarray`s.
+        Dimensions must be compatible, i.e.,
+        the first and second dimension of the array correspondes to the
+        first and second integer of the tuple, respectively, and
+        the for each integer the dimension must be unique.
+
+        This encodes discrete bivariate functions that can be summed, i.e.,
+        a function that has a representation as a sum of functions,
+        which each depend only on two of its arguments.
+        
+
+    B : tuple, optional
+        Number of iterations. Has roughly a complexity of
+        O(|v|^2 k^2) flops per iteration, where |v| is the number of
+        arguments/dimension of the problem and k is the maximum number values
+        each argument can take.
+    
+    c : dict
+        Keys must be the integers in the keys of `f`.
+        Maps each of these integers, resembling the dimensions
+        of the problem, to a rank.
+        An dimension with a smaller rank will a appear later in
+        a coordinate-like minimization of the problem.
+
+    Returns
+    -------
+    tuple
+        An approximate minimizer of the sum of the bivariates.
+    
+    float
+        The function value of the approximate minimizer.
+
+    References
+    ----------
+    .. [VK] Kolmogorov, Vladimir, 2005, "Convergent tree-reweighted message
+            passing for energy minimization," *Proceedings of Machine Learning Research*
+            R5: 182-189.
+    """
     # make sure vertices are index sequentially from zero--inplace
     rn1 = rename(f)
     # if not defined 

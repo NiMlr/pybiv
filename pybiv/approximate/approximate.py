@@ -49,7 +49,7 @@ def approx(F, K=None):
         the domain. It resembles the input argument `K`.
         Its values are floats.
     """
-    if F is callable:
+    if callable(F):
         handle = True
     else:
         K = F.shape
