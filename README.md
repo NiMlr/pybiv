@@ -1,8 +1,19 @@
 # pybiv
+
+<div style="bottom:50px; width: 45%; height: 45%; overflow: hidden"><img align="right" style="width: 45%; height: 45%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
+
 Work with sums of bivariate functions in Python.
 This packages provides software to approximate by, optimize and manipulate sums of bivariate functions.
 
-<div style="bottom:50px; width: 45%; height: 45%; overflow: hidden"><img align="right" style="width: 45%; height: 45%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
+A sum of bivariate functions is $f: \Omega \to \R$, where
+* $\Omega = \Omega_1 \times \dots \times \Omega_n$, where $\Omega_i = \{0, \dots, k_i-1\}$, $k_i \in \N$,
+* $\mathcal{V} := \{0, \dots n-1}$,
+* $\mathcal{E} := \{(i,j) \in \mathcal{V} \times \mathcal{V} \mid i < j \}$,
+* $f(x_0, \dots, x_{n-1}) = \sum_{(i,j) \in \mathcal{E}} f_{i, j}(x_i, x_j), x \in \Omega$.
+
+The $f_{i,j}, (i,j) \in \mathcal{E}$ is typically known or can be found by approximation.
+When working with this package $f_{i,j}, (i,j) \in \mathcal{E}$ is represented as a dictionary with
+keys $\mathcal{E}$ and values that are 2d-arrays $\big(f_{i,j}(x_i,x_j)\big)_{x_i=0,\dots, k_i-1; x_j=0, \dots,k_j-1}$.
 
 #### Installation
 
@@ -43,12 +54,12 @@ fig = plt.figure()
 ax = plt.axes(projection="3d")
 
 # compute values of 3-d function
-u = np.zeros((k,)*3)
-for x in itertools.product(*list(map(range, (k,)*3))):
-    u[x] = np.prod(x)/k**3
+F = lambda x: np.prod(x)/k**3
+
+# approximate
+aprxmnt = approx(F, (k,)*3)
 
 # create a plot of the residual of its best sum-of-bivariate-approximant
-aprxmnt = approx(lambda x: np.prod(x)/k**3, (k,)*3)
 ax.scatter3D(X, Y, Z, c=aprxmnt[2], alpha=0.5, marker='.')
 plt.axis('off')
 plt.grid(b=None)
