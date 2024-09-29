@@ -1,6 +1,6 @@
 # pybiv
 
-<div style="bottom:50px; width: 44%; height: 44%; overflow: hidden"><img align="right" style="width: 44%; height: 44%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
+<div style="width: 43%; height: 43%; overflow: hidden"><img align="right" style="width: 43%; height: 43%" src="https://github.com/user-attachments/assets/7ca6ec08-77e4-4782-920b-d548f9455786"></div>
 
 Work with sums of bivariate functions in Python.
 This packages provides software to approximate by, optimize and manipulate sums of bivariate functions.
