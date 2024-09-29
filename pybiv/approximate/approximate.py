@@ -4,11 +4,56 @@ import itertools
     
 
 def approx(F, K=None):
-    if K is None:
+    """l^2-Best approximate a discrete function by a sum of bivarite functions.
+
+    Parameters
+    ----------
+    F : np.ndarray or callable
+        If of type `np.ndarray` represents an evaluated function to the reals.
+        `F.shape` contains the number discrete values of each factor of the domain.
+        Its values must be numeric.
+ 
+        If of type `callable`, then `F` takes as one argument a tuple of integers.
+        The length of the accepted tuple must be the length of `K`.
+        `F` must accept integer tuples where the `i`-th integer can range
+        from `0` to `K[i]-1`.
+
+    K : tuple, optional
+        Only needed if `F` is a callable. Otherwise `K == F.shape`.
+        Tuple of positive integers containing
+        the number discrete values of each factor of the domain of `F`.
+
+    Returns
+    -------
+    tuple
+        Contains as a first element a dictionary where keys are tuples of
+        two integers and values are 2-d float `np.ndarray`s.
+        For integer `i` contained in some key `(i, j)` or `(j, i)`,
+        we associate the first or second element of the shape of the value
+        with the number of discrete values of each factor of the functions
+        domain. It is consistent over all key's integers values.
+        Therefore, the first element represents dictionary of (compatible)
+        bivariate functions.
+
+        The second element is a tuple itself containing the numbers of
+        discrete values of each factor of the bivariates domains indexed
+        by the same integer values that the keys of the dictionary contain.
+        It resembles the input argument `K`.
+    
+    float
+        The l^2-norm of the approximation residual.
+
+    np.ndarray
+        The approximation residual.
+        Its shape contains the number of discrete values of each factor of
+        the domain. It resembles the input argument `K`.
+        Its values are floats.
+    """
+    if F is callable:
+        handle = True
+    else:
         K = F.shape
         handle = False
-    else:
-        handle = True
     n = len(K)
 
     num_vars_t = 0
@@ -49,12 +94,12 @@ def approx(F, K=None):
 
 
     sol = sp.sparse.linalg.lsmr(A,B, atol=1e-14, btol=1e-14)
-    err = np.linalg.norm(A@sol[0]-B)
     res = (A@sol[0]-B).reshape(K, order='C')
-    f_biv = reshape_biv(sol[0], K)
+    err = np.linalg.norm(res)
+    f_biv = _reshape_biv(sol[0], K)
     return (f_biv, err, res)
 
-def reshape_biv(biv_vector, K):
+def _reshape_biv(biv_vector, K):
     n = len(K)
     f_biv = {}
     var_ind = 0
@@ -63,4 +108,3 @@ def reshape_biv(biv_vector, K):
         f_biv[pair] = biv_vector[var_ind:succ].reshape(K[pair[0]],K[pair[1]])
         var_ind = succ
     return (f_biv, K)
-
