@@ -7,8 +7,8 @@ This packages provides software to approximate by, optimize and manipulate sums 
 
 A sum of bivariate functions is $f: \Omega \to \mathbb{R}$, where
 * $\Omega = \Omega_0 \times \dots \times \Omega_{n-1}$, where $\Omega_i = \\{0, \dots, k_i-1\\}$, $k_i \in \mathbb{N}$,
-* $\mathcal{V} := \{0, \dots n-1\}$,
-* $\mathcal{E} := \{(i,j) \in \mathcal{V} \times \mathcal{V} \mid i < j \}$,
+* $\mathcal{V} := \\{0, \dots n-1\\}$,
+* $\mathcal{E} := \\{(i,j) \in \mathcal{V} \times \mathcal{V} \mid i < j \\}$,
 * $f(x_0, \dots, x_{n-1}) = \sum_{(i,j) \in \mathcal{E}} f_{i, j}(x_i, x_j), x \in \Omega$.
 
 The $f_{i,j}, (i,j) \in \mathcal{E}$ is typically known or can be found by approximation.
