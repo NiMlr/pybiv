@@ -78,6 +78,7 @@ import numpy as np
 # number of arguments of f
 n = 16
 # number is discrete values each argument takes
+np.random.seed(42)
 K = np.random.randint(2, 10, n)
 # indices of the summands
 E = [(0, 8), (3, 4), (0, 6), (11, 14), (1, 15), (2, 7), (12, 14), (9, 10), (5, 14), (3, 13)]
@@ -86,4 +87,5 @@ f = {edge: np.random.randn(K[edge[0]], K[edge[1]]) for edge in E}
 
 # do 100 iterations of trws and print the objective value of the approximate minimizer
 print(trws(f, 100)[1])
+# -14.276798331614463
 ```
