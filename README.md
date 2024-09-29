@@ -73,6 +73,7 @@ Then we apply the `pybiv.optimize.trws` to approximately solve the problem.
 
 ```python
 from pybiv.optimize import trws
+import numpy as np
 
 # number of arguments of f
 n = 16
