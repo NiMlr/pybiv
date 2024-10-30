@@ -91,5 +91,5 @@ f = {edge: np.random.randn(K[edge[0]], K[edge[1]]) for edge in E}
 
 # do 100 iterations of trws and print the objective value of the approximate minimizer
 print(trws(f, 100)[1])
-# -14.276798331614463
+# -17.376521549856204
 ```

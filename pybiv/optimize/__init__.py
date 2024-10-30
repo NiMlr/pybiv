@@ -1,1 +1,1 @@
-from .trws import trws
+from .trws import trws, trws_leg

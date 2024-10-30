@@ -3,7 +3,7 @@ import erdospy
 import itertools
 import os
 import pkg_resources
-from ..optimize import trws
+from ..optimize import trws, trws_leg
 
 def test_trws_approx_inplace():
     n = 10
@@ -16,10 +16,15 @@ def test_trws_approx_inplace():
     f1 = {edge: np.random.randn(k[edge[0]], k[edge[1]]) for edge in edges}
     f2 = {edge: f1[edge].copy() for edge in f1.keys()}
 
-    trws(f1, 100)
+    trws(f1, 1000)
 
     assert f1.keys() == f2.keys()
-    assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-11, atol=1e-11) for edge in f1.keys()])
+    assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
+
+    trws_leg(f1, 1000)
+
+    assert f1.keys() == f2.keys()
+    assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
 
 def test_trws_tree():
     f = {(1,2): np.array([[3.,8,0],[6,8,9],[6,1,9]]),
@@ -30,6 +35,7 @@ def test_trws_tree():
     c2 = c1.copy()
     B = 10
     assert trws(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
+    assert trws_leg(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
     assert c1 == c2
 
 def test_trws_consistency():
@@ -47,7 +53,9 @@ def test_trws_consistency():
     f1 = {edge: np.random.randn(k[edge[0]], k[edge[1]]) for edge in edges}
     f2 = f1.copy()
     x, fx = trws(f1, 2)
-
+    assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
+                        rtol=1e-11, atol=1e-11)
+    x, fx = trws_leg(f1, 2)
     assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
                         rtol=1e-11, atol=1e-11)
 
@@ -64,5 +72,7 @@ def test_trws_accuracy():
         if fx < fxstar:
             fxstar = fx
     x, fx = trws(f, 10)
+    assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
+    x, fx = trws_leg(f, 10)
     assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
 
