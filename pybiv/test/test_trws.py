@@ -3,7 +3,7 @@ import erdospy
 import itertools
 import os
 import pkg_resources
-from ..optimize import trws, trws_leg
+from ..optimize import trws, trws_leg, eccdd
 
 def test_trws_approx_inplace():
     n = 10
@@ -26,6 +26,11 @@ def test_trws_approx_inplace():
     assert f1.keys() == f2.keys()
     assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
 
+    eccdd(f1, 1000, 1.)
+
+    assert f1.keys() == f2.keys()
+    assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
+
 def test_trws_tree():
     f = {(1,2): np.array([[3.,8,0],[6,8,9],[6,1,9]]),
          (2,3): np.array([[14.,5,7],[12,10,14],[12,5,7]]),
@@ -36,6 +41,7 @@ def test_trws_tree():
     B = 10
     assert trws(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
     assert trws_leg(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
+    assert eccdd(f, B, 1.)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
     assert c1 == c2
 
 def test_trws_consistency():
@@ -58,6 +64,9 @@ def test_trws_consistency():
     x, fx = trws_leg(f1, 2)
     assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
                         rtol=1e-11, atol=1e-11)
+    x, fx = eccdd(f1, 2, 1.)
+    assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
+                        rtol=1e-11, atol=1e-11)
 
 def test_trws_accuracy():
     np.random.seed(0)
@@ -74,5 +83,8 @@ def test_trws_accuracy():
     x, fx = trws(f, 10)
     assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
     x, fx = trws_leg(f, 10)
+    assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
+    h = [set(edges), {(edge[1], edge[0]) for edge in edges}]
+    x, fx = eccdd(f, 10, 1., h)
     assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
 
