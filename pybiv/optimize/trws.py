@@ -268,7 +268,8 @@ def trws(f, B, c=None):
         for i in range(n):
             r[i][:] = 0.
             for j in nbrs[i][1]:
-                r[i][:] += rho[(i,j)]
+                # r[i][:] += rho[(i,j)]
+                r[i][:] += mm[(i,j)]
             for j in nbrs[i][0]:
                 r[i][:] += f[(j,i)][x[j], :]
             x[i] = np.argmin(r[i])

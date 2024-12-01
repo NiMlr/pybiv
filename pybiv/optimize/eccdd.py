@@ -89,6 +89,7 @@ def eccdd(f, B, eps, h=None):
     rho = {(edge[i], edge[1-i]): np.zeros(K[edge[i]]) for edge in E for i in range(2)}
     r = {i: np.zeros(K[i]) for i in range(n)}
     d = {i: np.zeros(K[i]) for i in range(n)}
+    span = {i: np.zeros(K[i]) for i in range(n)}
 
     
     # count number of neighbors and collect smaller and larger neighbors
@@ -126,7 +127,24 @@ def eccdd(f, B, eps, h=None):
 
     t = 0
 
-    def smax(x, axis=None): return eps*sp.special.logsumexp(x/eps, axis)
+    g = deepcopy(f)
+    def smax(x, work, out, axis=None):
+        x /= eps
+        np.max(x, axis=axis, out=work)
+        work *= eps
+        out += work
+        work /= eps
+        if axis == 1:
+            x -= work[:, None]
+        elif axis == 0:
+            x -= work[None,:]
+        np.exp(x, out=x)
+        np.sum(x, axis=axis, out=work)
+        np.log(work, out=work)
+        work *= eps
+        out += work
+        work /= eps
+
     def sortt(t):
         if t[0] > t[1]:
             return (t[1], t[0])
@@ -143,20 +161,36 @@ def eccdd(f, B, eps, h=None):
             for (i,j) in halpha:
                 d[i][:] = -np.inf
                 for l in nbrs[i][0]:
-                    r[i][:] = smax(f[(l, i)]-rhominus[(l, i)][:,None], axis=0) 
-                    r[i] += smax(rhominus[(l, i)][:,None]-f[(l, i)], axis=0)
+                    r[i][:] = 0.
+                    g[(l, i)][:] = f[(l, i)]
+                    g[(l, i)] -= rhominus[(l, i)][:,None]
+                    smax(g[(l, i)], span[i], r[i], axis=0) 
+                    g[(l, i)][:] = f[(l, i)]
+                    g[(l, i)] -= rhominus[(l, i)][:,None]
+                    g[(l, i)] *= -1.
+                    smax(g[(l, i)], span[i], r[i], axis=0) 
                     np.maximum(r[i], d[i], out=d[i])
                 for l in nbrs[i][1]:
-                    r[i][:] = smax(f[(i,l)]-rhominus[(l, i)][None,:], axis=1)
-                    r[i] += smax(rhominus[(l, i)][None,:]-f[(i, l)], axis=1)
+                    r[i][:] = 0.
+                    g[(i, l)][:] = f[(i, l)]
+                    g[(i, l)] -= rhominus[(l, i)][None, :]
+                    smax(g[(i, l)], span[i], r[i], axis=1) 
+                    g[(i, l)][:] = f[(i, l)]
+                    g[(i, l)] -= rhominus[(l, i)][None, :]
+                    g[(i, l)] *= -1.
+                    smax(g[(i, l)], span[i], r[i], axis=1) 
                     np.maximum(r[i], d[i], out=d[i])
                 
                 rho[(i,j)][:] = gamma[i]
                 if i < j:
-                    rho[(i,j)] += smax(f[(i,j)] - rhominus[(j,i)][None,:], axis=1)
+                    g[(i, j)][:] = f[(i, j)]
+                    g[(i, j)] -= rhominus[(j, i)][None, :]
+                    smax(g[(i, j)], span[i], rho[(i,j)], axis=1)
                 if j < i:
-                    rho[(i,j)] += smax(f[(j,i)] - rhominus[(j,i)][:,None], axis=0)
-                rho[(i,j)] -= d[i]           
+                    g[(j, i)][:] = f[(j, i)]
+                    g[(j, i)] -= rhominus[(j, i)][:, None]
+                    smax(g[(j, i)], span[i], rho[(i,j)], axis=0)
+                rho[(i,j)] -= d[i]
         
         _opt()
         fx = _eval(x)
