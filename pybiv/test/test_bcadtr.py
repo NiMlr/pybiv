@@ -2,9 +2,9 @@ import numpy as np
 import itertools
 import os
 import pkg_resources
-from ..optimize import trws, trws_leg, eccdd
+from ..optimize import bcadtr
 
-def test_trws_approx_inplace():
+def test_bcadtr_approx_inplace():
     n = 10
     m = 5
     k = np.array([7, 6, 3, 5, 7, 6, 3, 3, 4, 3])
@@ -15,22 +15,17 @@ def test_trws_approx_inplace():
     f1 = {edge: np.random.randn(k[edge[0]], k[edge[1]]) for edge in edges}
     f2 = {edge: f1[edge].copy() for edge in f1.keys()}
 
-    trws(f1, 1000)
+    bcadtr(f1, 1000)
 
     assert f1.keys() == f2.keys()
     assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
 
-    trws_leg(f1, 1000)
+    bcadtr(f1, 1000, w="random")
 
     assert f1.keys() == f2.keys()
     assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
 
-    eccdd(f1, 1000, 1.)
-
-    assert f1.keys() == f2.keys()
-    assert np.all([np.allclose(f1[edge], f2[edge], rtol=1e-14, atol=1e-14) for edge in f1.keys()])
-
-def test_trws_tree():
+def test_bcadtr_tree():
     f = {(1,2): np.array([[3.,8,0],[6,8,9],[6,1,9]]),
          (2,3): np.array([[14.,5,7],[12,10,14],[12,5,7]]),
          (3,4): np.array([[7.,0,0],[1,1,0],[2,0,4]]),
@@ -38,12 +33,11 @@ def test_trws_tree():
     c1 = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4}
     c2 = c1.copy()
     B = 10
-    assert trws(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
-    assert trws_leg(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
-    assert eccdd(f, B, 1.)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
+    assert bcadtr(f, B, c=c1)==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
+    assert bcadtr(f, B, c=c1, w="random")==({1:0, 2:2, 3:1, 4:2, 5: 0}, 5.0)
     assert c1 == c2
 
-def test_trws_consistency():
+def test_bcadtr_consistency():
     n = 100
     m = 2000
     k = np.array([69, 86, 96, 57, 97, 37, 45,  4, 10, 17, 18, 68, 95, 24, 16, 77, 47,
@@ -57,17 +51,15 @@ def test_trws_consistency():
     edges = [tuple(sorted([edges[0,v,0], edges[1,v,0]])) for v in range(edges.shape[1])]
     f1 = {edge: np.random.randn(k[edge[0]], k[edge[1]]) for edge in edges}
     f2 = f1.copy()
-    x, fx = trws(f1, 2)
-    assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
-                        rtol=1e-11, atol=1e-11)
-    x, fx = trws_leg(f1, 2)
-    assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
-                        rtol=1e-11, atol=1e-11)
-    x, fx = eccdd(f1, 2, 1.)
+    x, fx = bcadtr(f1, 2)
     assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
                         rtol=1e-11, atol=1e-11)
 
-def test_trws_accuracy():
+    x, fx = bcadtr(f1, 2, w="random")
+    assert np.isclose(fx, np.sum([f2[(i,j)][x[i], x[j]] for i,j in f2.keys()]),\
+                        rtol=1e-11, atol=1e-11)
+
+def test_bcadtr_accuracy():
     np.random.seed(0)
     n = 16
     K = np.random.randint(2, 3, n)
@@ -79,11 +71,8 @@ def test_trws_accuracy():
         fx = np.sum([f[(i,j)][x[i], x[j]] for i,j in f.keys()])
         if fx < fxstar:
             fxstar = fx
-    x, fx = trws(f, 10)
+    x, fx = bcadtr(f, 10)
     assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
-    x, fx = trws_leg(f, 10)
-    assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
-    h = [set(edges), {(edge[1], edge[0]) for edge in edges}]
-    x, fx = eccdd(f, 10, 1., h)
+    x, fx = bcadtr(f, 10, w="random")
     assert np.isclose(fxstar, fx, rtol=1e-11, atol=1e-11)
 
