@@ -3,7 +3,6 @@ import scipy as sp
 import itertools
 import sys
 from ..tools import (orient, rename, get_c, get_nbrs)
-np.set_printoptions(threshold=sys.maxsize)
 
 
 def lpdlp(f, c=None):
@@ -155,8 +154,7 @@ def lpdlp(f, c=None):
 
     res = sp.optimize.linprog(cost, A_ub=A_ub, b_ub=b_ub,
                              A_eq=A_eq, b_eq=b_eq,
-                             method="highs-ds")
-                             #options={"presolve": False})
+                             method="highs-ipm", bounds=(None, None))
 
     rho[:] = res['x']
     # dual solution to primal candidate

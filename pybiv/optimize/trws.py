@@ -127,6 +127,7 @@ def trws_leg(f, B, c=None):
     while t < B:
         # loop vertices in order defined by c /reversed c (we reordered them)
         for i in _rev(range(n)):
+            m[i][:] = 0.
             for j in nbrs[i][0]:
                 m[i] += mm[(i,j)]
             for j in nbrs[i][1]:

@@ -5,11 +5,11 @@
 Work with sums of bivariate functions in Python.
 This packages provides software to approximate by, optimize and manipulate sums of bivariate functions.
 
-A sum of bivariate functions is $f: \Omega \to \mathbb{R}$, where
-* $\Omega = \Omega_0 \times \dots \times \Omega_{n-1}$, where $\Omega_i = \\{0, \dots, K_i-1\\}$, $K_i \in \mathbb{N}$,
+A sum of bivariate functions is $F: \Omega \to \mathbb{R}$, where
+* $\Omega := \Omega_0 \times \dots \times \Omega_{n-1}$, where $\Omega_i := \\{0, \dots, K_i-1\\}$, $K_i \in \mathbb{N}$,
 * $\mathcal{V} := \\{0, \dots n-1\\}$,
 * $\mathcal{E} := \\{(i,j) \in \mathcal{V} \times \mathcal{V} \mid i < j \\}$,
-* $f(x_0, \dots, x_{n-1}) = \sum_{(i,j) \in \mathcal{E}} f_{i, j}(x_i, x_j), x \in \Omega$.
+* $F(x_0, \dots, x_{n-1}) = \sum_{(i,j) \in \mathcal{E}} f_{i, j}(x_i, x_j), x \in \Omega$.
 
 The $f_{i,j}, (i,j) \in \mathcal{E}$ is typically known or can be found by approximation.
 When working with this package $f_{i,j}, (i,j) \in \mathcal{E}$ is represented as a dictionary with
@@ -58,13 +58,13 @@ fig = plt.figure()
 ax = plt.axes(projection="3d")
 
 # compute values of 3-d function
-F = lambda x: np.prod(x)/k**3
+G = lambda x: np.prod(x)/k**3
 
 # approximate
-aprxmnt = approx(F, (k,)*3)
+F = approx(G, (k,)*3)[2]
 
 # create a plot of the residual of its best sum-of-bivariate-approximant
-ax.scatter3D(X, Y, Z, c=aprxmnt[2], alpha=0.5, marker='.')
+ax.scatter3D(X, Y, Z, c=F, alpha=0.5, marker='.')
 plt.axis('off')
 plt.grid(b=None)
 plt.show()
@@ -72,14 +72,24 @@ plt.show()
 
 #### Optimization
 
+The available optimizers are the following.
+
+| Name | Description |  
+|-------|-----------|
+| [`cd`](https://github.com/NiMlr/pybiv/blob/main/pybiv/optimize/cd.py) | Coordinate descent for directly minimizing sums of bivariates |
+| [`lpdlp`](https://github.com/NiMlr/pybiv/blob/main/pybiv/optimize/lpdlp.py) | Linear programming for the Lagrangian dual of a relaxation of sums of bivariates paired with a heuristic to transform the solution |
+| [`bcadtr`](https://github.com/NiMlr/pybiv/blob/main/pybiv/optimize/bcadtr.py) | Block coordinate ascent for the Lagrangian dual of a relaxation of sums of bivariates paired with a heuristic to transform the solution |
+| [`trws`](https://github.com/NiMlr/pybiv/blob/main/pybiv/optimize/trws.py) | Sequential tree-reweighted message passing for the Lagrangian dual of a relaxation of sums of bivariates paired with a heuristic to transform the solution |
+| [`trws_leg`](https://github.com/NiMlr/pybiv/blob/main/pybiv/optimize/trws.py) | Legacy sequential tree-reweighted message passing paired with a heuristic to transform the solution |
+
 We generate a non-trivial mock problem.
-Then we apply the `pybiv.optimize.trws` to approximately solve the problem.
+Then we apply the `pybiv.optimize.trws` and `pybiv.optimize.bcadtr` to heuristically solve the NP-complete problem of minimizing the sum of bivariates $F:\Omega \to \mathbb{R}$.
 
 ```python
-from pybiv.optimize import trws
+from pybiv.optimize import trws, bcadtr
 import numpy as np
 
-# number of arguments of f
+# number of arguments of F
 n = 16
 # number is discrete values each argument takes
 np.random.seed(42)
@@ -87,9 +97,11 @@ K = np.random.randint(2, 10, n)
 # indices of the summands
 E = [(0, 8), (3, 4), (0, 6), (11, 14), (1, 15), (2, 7), (12, 14), (9, 10), (5, 14), (3, 13)]
 # data struture representing all (compatible) bivariates
-f = {edge: np.random.randn(K[edge[0]], K[edge[1]]) for edge in E}
+F = {edge: np.random.randn(K[edge[0]], K[edge[1]]) for edge in E}
 
-# do 100 iterations of trws and print the objective value of the approximate minimizer
-print(trws(f, 100)[1])
+# do 100 iterations and print the objective value of the approximate minimizer
+print(trws(F, 100)[1])
+# -17.376521549856204
+print(bcadtr(F, 100)[1])
 # -17.376521549856204
 ```

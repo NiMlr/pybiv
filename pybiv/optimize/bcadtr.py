@@ -4,7 +4,7 @@ from copy import deepcopy
 from ..tools import (orient, rename, get_c, get_nbrs)
 
 
-def bcadtr(f, B, c=None, w="constant"):
+def bcadtr(f, B, c=None, w="random"):
     """Try to minimize a sum of bivariate functions.
 
     Try to solve the NP-complete problem of minimizing
