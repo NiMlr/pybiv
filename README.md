@@ -148,7 +148,7 @@ edges.append((0,n-1))
 # coordinate priority (technical)
 c = np.arange(n)
 
-# compute the approximate minimum of the bivariate
+# compute the approximate minimum of the sum of bivariates
 res = bcadtr(f, 500, c=c)
 
 # decode to receive the reconstruction of the signal
