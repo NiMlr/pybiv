@@ -109,7 +109,7 @@ print(bcadtr(F, 100)[1])
 
 #### Signal Reconstruction
 
-We model a signal reconstruction problem with constraints. In particular, the unknown signal is $\mathrm{sig}: S^1 \to \{-2, -1, 0, 1, 2\}$, i.e., it is periodic and takes discrete values. The goal is to recover the signal from a noisy version of itself using TV-regularizated $\ell^1$-minimization.
+We model a signal reconstruction problem with constraints. In particular, the unknown signal is $\mathrm{sig}: S^1 \to \\{-2, -1, 0, 1, 2\\}$, i.e., it is periodic and takes discrete values. The goal is to recover the signal from a noisy version of itself using TV-regularizated $\ell^1$-minimization.
 
 ```python
 import numpy as np
