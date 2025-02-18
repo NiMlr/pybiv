@@ -33,6 +33,7 @@ pybiv.test.test_all()
 ### Contents
 [1. Approximation](#approximation)  
 [2. Optimization](#optimization)  
+[3. Signal Reconstruction](#signal-reconstruction)  
 
 #### Approximation
 
@@ -105,3 +106,57 @@ print(trws(F, 100)[1])
 print(bcadtr(F, 100)[1])
 # -17.376521549856204
 ```
+
+#### Signal Reconstruction
+
+We model a signal reconstruction problem with constraints. In particular, the unknown signal is $\mathrm{sig}: S^1 \to \{-2, -1, 0, 1, 2\}$, i.e., it is periodic and takes discrete values. The goal is to recover the signal from a noisy version of itself using TV-regularizated $\ell^1$-minimization.
+
+```python
+import numpy as np
+from pybiv.optimize import bcadtr
+np.random.seed(0)
+
+# create a signal with n values
+n = 1000
+A = 2.
+freq = 3.
+sig = np.round(A*np.sin(freq*2.*np.pi*np.arange(n)/n))
+
+# impose noise
+noise = 3.5
+noisysig = sig + noise*(np.random.rand(n)-(1./2))
+
+
+reg = 3.5
+# encode domain
+vals = np.unique(sig)
+domain = np.arange((vals[0]-noise).astype("int"), (vals[-1]+noise).astype("int")+1)
+m = len(domain)-1
+# model regularization
+a = np.arange(m,-1, -1) + np.arange(0,m+1)[:,None]
+eye1 = np.abs(np.arange(-m,m+1))[a.astype("int")].astype("int")
+# model circular graph
+edges = [(i, i+1) for i in range(n-1)]
+edges.append((n-1, 0))
+# model cost functions as bivariates
+f = {edge: np.abs(noisysig[edge[0]]-domain)[:,None] \
+              +reg*eye1 for edge in edges}
+f[(0, n-1)] = f[(n-1, 0)].T
+del f[(n-1, 0)]
+edges.pop(-1)
+edges.append((0,n-1))
+# coordinate priority (technical)
+c = np.arange(n)
+
+# compute the approximate minimum of the bivariate
+res = bcadtr(f, 500, c=c)
+
+# decode to receive the reconstruction of the signal
+lpressol = np.array([res[0][i] for i in range(n)])
+rcnstrctn = domain[lpressol]
+
+# we identify >80% of the values correctly
+print(np.linalg.norm(rcnstrctn-sig, ord=1))
+# 174.0
+```
+![reconstruction for different regularizations](https://github.com/user-attachments/assets/f80c6afd-b412-4a86-8326-0ed8fb92860a)

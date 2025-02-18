@@ -32,8 +32,9 @@ def lpdlp(f, c=None):
         Keys must be the integers in the keys of `f`.
         Maps each of these integers, resembling the dimensions
         of the problem, to a rank.
-        An dimension with a smaller rank will a appear later in
+        A dimension with a smaller rank will appear later in
         a coordinate-like minimization of the problem.
+        Defaults to a priority based on the vertex degree.
 
     Returns
     -------
