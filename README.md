@@ -33,7 +33,7 @@ pybiv.test.test_all()
 ### Contents
 [1. Approximation](#approximation)  
 [2. Optimization](#optimization)  
-[3. Signal Reconstruction](#signal-reconstruction)  
+[3. Signal Reconstruction](#signal-reconstruction)    
 
 #### Approximation
 
@@ -160,3 +160,19 @@ print(np.linalg.norm(rcnstrctn-sig, ord=1))
 # 174.0
 ```
 ![reconstruction for different regularizations](https://github.com/user-attachments/assets/f80c6afd-b412-4a86-8326-0ed8fb92860a)
+
+
+### How to Cite
+
+If you use `pybiv` in your research, please consider citing the associated [paper](https://arxiv.org/abs/2511.20607).
+
+```bibtex
+@misc{müller2025sbiv,
+      title={Optimization of Sums of Bivariate Functions: An Introduction to Relaxation-Based Methods for the Case of Finite Domains}, 
+      author={Nils Müller},
+      year={2025},
+      eprint={2511.20607},
+      archivePrefix={arXiv},
+      primaryClass={math.OC}
+}
+```
