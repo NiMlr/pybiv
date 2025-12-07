@@ -15,6 +15,8 @@ The $f_{i,j}, (i,j) \in \mathcal{E}$ is typically known or can be found by appro
 When working with this package $f_{i,j}, (i,j) \in \mathcal{E}$ is represented as a dictionary with
 keys $\mathcal{E}$ and values that are 2d-arrays $f_{i,j}(x_i,x_j)_{x_i=0,\dots, k_i-1; x_j=0, \dots,k_j-1}$.
 
+Learn [how to cite](#how-to-cite) this software below.
+
 #### Installation
 
 `pybiv` can be installed directly from source with:
